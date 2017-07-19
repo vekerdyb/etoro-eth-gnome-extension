@@ -9,7 +9,7 @@ git clone https://github.com/vekerdyb/etoro-eth-gnome-extension.git Etoro@vekerd
 ```
 Press `Alt+F2` type `r` and hit enter.
 
-Go to https://extensions.gnome.org/local/ in your browser, or open `gnome-tweak-tools` and enable `EtoroETH`.
+Go to https://extensions.gnome.org/local/ in your browser, or open `gnome-tweak-tools` and enable `eToroETH`.
 
 # Notes
 Uses the 5 minute data and updates every 10 seconds.

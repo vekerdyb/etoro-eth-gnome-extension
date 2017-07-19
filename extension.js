@@ -6,8 +6,12 @@ const Mainloop = imports.mainloop;
 const Clutter = imports.gi.Clutter;
 const PanelMenu = imports.ui.panelMenu;
 
-const ETORO_URL = 'https://candle.etoro.com/candles/desc.json/FiveMinutes/2/100001';
+const timeFrameMap = {
+    'OneHour': '1h'
+};
+const timeFrame = 'OneHour';
 
+const ETORO_URL = 'https://candle.etoro.com/candles/desc.json/' + timeFrame + '/1/100001';
 
 let _httpSession;
 const EtoroETHIndicator = new Lang.Class({
@@ -28,7 +32,7 @@ const EtoroETHIndicator = new Lang.Class({
     _refresh: function () {
         this._loadData(this._refreshUI);
         this._removeTimeout();
-        this._timeout = Mainloop.timeout_add_seconds(10, Lang.bind(this, this._refresh));
+        this._timeout = Mainloop.timeout_add_seconds(1, Lang.bind(this, this._refresh));
         return true;
     },
 
@@ -47,12 +51,14 @@ const EtoroETHIndicator = new Lang.Class({
     },
 
     _refreshUI: function (data) {
-        let txt = data.Candles[0].RangeLow.toString();
-        let direction = data.Candles[0].Candles[0].Open - data.Candles[0].Candles[0].Close;
-        let sign = direction > 0 ? '↑' : direction === 0 ? ' ' : '↓';
-        txt = txt.substring(0,6) + ' USD ' + sign + direction.toString().substring(0,4);
+        const range = data.Candles[0];
+        let txt = range.RangeClose.toString();
+        const difference = this.roundTo2Dec(range.RangeClose - range.RangeOpen);
+        const absDifference = Math.abs(difference);
+        let sign = difference > 0 ? '↑' : difference === 0 ? ' ' : '↓';
+        txt = '$' + txt.substring(0,6) + ' ' + sign + ' $' + absDifference + '|' + timeFrameMap[timeFrame];
         this.buttonText.set_text(txt);
-        this.buttonText.style_class = direction > 0 ? 'up' : 'down';
+        this.buttonText.style_class = difference > 0 ? 'up' : 'down';
     },
 
     _removeTimeout: function () {
@@ -72,7 +78,15 @@ const EtoroETHIndicator = new Lang.Class({
         this._timeout = undefined;
 
         this.menu.removeAll();
+    },
+
+    roundTo2Dec: function(number) {
+        const factor = Math.pow(10, 2);
+        const tempNumber = number * factor;
+        const roundedTempNumber = Math.round(tempNumber);
+        return roundedTempNumber / factor;
     }
+
 });
 
 let etoroMenu;
