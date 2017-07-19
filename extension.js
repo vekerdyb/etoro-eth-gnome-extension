@@ -10,6 +10,7 @@ const timeFrameMap = {
     'OneHour': '1h'
 };
 const timeFrame = 'OneHour';
+const updateFrequency = 360; // times per hour
 
 const ETORO_URL = 'https://candle.etoro.com/candles/desc.json/' + timeFrame + '/1/100001';
 
@@ -32,7 +33,7 @@ const EtoroETHIndicator = new Lang.Class({
     _refresh: function () {
         this._loadData(this._refreshUI);
         this._removeTimeout();
-        this._timeout = Mainloop.timeout_add_seconds(1, Lang.bind(this, this._refresh));
+        this._timeout = Mainloop.timeout_add_seconds(3600 / updateFrequency, Lang.bind(this, this._refresh));
         return true;
     },
 
@@ -55,8 +56,9 @@ const EtoroETHIndicator = new Lang.Class({
         let txt = range.RangeClose.toString();
         const difference = this.roundTo2Dec(range.RangeClose - range.RangeOpen);
         const absDifference = Math.abs(difference);
+        const percentageDifference = Math.abs(this.roundTo2Dec(difference / range.RangeClose * 100));
         let sign = difference > 0 ? '↑' : difference === 0 ? ' ' : '↓';
-        txt = '$' + txt.substring(0,6) + ' ' + sign + ' $' + absDifference + '|' + timeFrameMap[timeFrame];
+        txt = '$' + txt.substring(0, 6) + ' ' + sign + ' $' + absDifference + ' (' + percentageDifference + '%)' + ' ' + timeFrameMap[timeFrame];
         this.buttonText.set_text(txt);
         this.buttonText.style_class = difference > 0 ? 'up' : 'down';
     },
@@ -80,7 +82,7 @@ const EtoroETHIndicator = new Lang.Class({
         this.menu.removeAll();
     },
 
-    roundTo2Dec: function(number) {
+    roundTo2Dec: function (number) {
         const factor = Math.pow(10, 2);
         const tempNumber = number * factor;
         const roundedTempNumber = Math.round(tempNumber);

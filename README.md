@@ -12,4 +12,9 @@ Press `Alt+F2` type `r` and hit enter.
 Go to https://extensions.gnome.org/local/ in your browser, or open `gnome-tweak-tools` and enable `eToroETH`.
 
 # Notes
-Uses the 5 minute data and updates every 10 seconds.
+Uses the 1 hour data and updates every 10 seconds.
+
+# Planned features
+- [ ] Ability to change data window
+- [ ] Ability to change update frequency
+- [ ] Show more information on click
