@@ -12,7 +12,9 @@ const timeFrameMap = {
 const timeFrame = 'OneHour';
 const updateFrequency = 360; // times per hour
 
-const ETORO_URL = 'https://candle.etoro.com/candles/desc.json/' + timeFrame + '/1/100001';
+const INSTRUMENT_ID = '1979';
+// const INSTRUMENT_ID = '100001';
+const ETORO_URL = 'https://candle.etoro.com/candles/desc.json/' + timeFrame + '/1/' + INSTRUMENT_ID;
 
 let _httpSession;
 const EtoroETHIndicator = new Lang.Class({
